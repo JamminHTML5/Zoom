@@ -1,0 +1,320 @@
+<!DOCTYPE html5>
+<html>
+<head>
+<title>Zoom & Move Video</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta name="keywords" content="jamminhtml5,video,zoom,html5,playlist">
+<script src="https://rawgit.com/timmywil/jquery.panzoom/master/test/libs/jquery.js"></script>
+<script src="https://rawgit.com/timmywil/jquery.panzoom/master/dist/jquery.panzoom.js"></script>
+
+<script>
+
+// ProgressBar - 1024
+
+var bar, slider, w=0;
+
+function initProgressBar()
+{
+v1 = document.getElementById('video1');
+pp = document.getElementById('pp');
+
+setInterval(readout, 30);
+
+bar = document.getElementById('bar');
+slider = document.getElementById('slider');
+bar.addEventListener('mousedown', startSlide, false);	
+bar.addEventListener('mouseup', stopSlide, false);
+}
+ 
+function startSlide(event)
+{
+var set_w = event.clientX - bar.offsetLeft.toFixed(0);
+bar.addEventListener('mousemove', moveSlide, false);	
+set_ct = video1.currentTime;
+set_tt = video1.duration;
+video1.currentTime = set_w/966 * set_tt;  // Set currentTime, & the green bar will go to it.
+document.getElementById('disc').style.left = set_w - 12;
+}
+ 
+function moveSlide(event)
+{
+var set_w = event.clientX - bar.offsetLeft.toFixed(0);
+set_tt = video1.duration;
+video1.currentTime = set_w/966 * set_tt;  // Set currentTime, & the green bar will go to it.
+
+document.getElementById('disc').style.left = set_w - 12;
+}
+
+function stopSlide(event)
+{
+var set_w = event.clientX - bar.offsetLeft.toFixed(0);
+bar.removeEventListener('mousemove', moveSlide, false);
+set_tt = video1.duration;
+video1.currentTime = set_w/966 * set_tt;  // Set currentTime, & the green bar will go to it.
+document.getElementById('disc').style.left = set_w - 12;
+}
+
+function readout()
+{
+var ct = video1.currentTime, tt = video1.duration, ct_readout='', tt_readout='';
+w = ct/tt * 966;
+
+if(ct > 59.999999) ct_readout = '' + Math.floor(ct / 60) + ':'; // 59.000001 to 59.999999
+if(ct > 59 && ct % 60 < 10) ct_readout += '0';
+ct_readout += Math.floor(ct % 60);
+
+if(tt > 59) tt_readout = '' + Math.floor(tt / 60) + ':';
+if(tt > 59 && tt % 60 < 10) tt_readout += '0';
+tt_readout += Math.floor(tt % 60);
+
+bothTimesWhole.style.marginRight="60px";
+if(ct <= tt)  // Without the if, NAN shows briefly, & the right side of the cell jumps.
+  document.getElementById('bothTimesWhole').innerHTML='' + ct_readout + ' / ' + tt_readout;
+
+slider.style.width = w;
+disc.style.left = w - 12;
+}
+
+// Video Player Controls
+
+v1 = document.getElementById('video1');
+pp = document.getElementById('pp');
+var isShown = new Boolean();  // Volume Slider
+
+function halt() { 
+v1.currentTime=0;
+v1.pause();
+pp.src="https://lh5.googleusercontent.com/-IIiZ8hWrv1k/VQLsZXTdRHI/AAAAAAAAAMc/bvEYTcnk5XA/s73/Play.png";
+}
+
+function play_pause() { 
+  if (v1.paused) {  // paused is a Boolean
+    v1.play();
+    pp.src="https://lh6.googleusercontent.com/-NJHb-5Oj0zs/VQLsZb3CaeI/AAAAAAAAAMc/W0uyQvEZ83E/s73/Pause.png";
+  } 
+  else {
+    v1.pause();  // pause is a command (no d)
+    pp.src="https://lh5.googleusercontent.com/-IIiZ8hWrv1k/VQLsZXTdRHI/AAAAAAAAAMc/bvEYTcnk5XA/s73/Play.png";
+  } 
+}
+
+function show_hide_vol() {
+if(isShown) { document.getElementById("vol_div").style.display = "none"; isShown = false; }
+else { document.getElementById("vol_div").style.display="inherit"; isShown = true; }
+}
+
+// Zoom Video Program
+
+var isShown = new Boolean();  // Volume Slider
+var isFull = new Boolean();  // Volume Slider
+
+function getParams() {
+var idx = document.URL.indexOf('?');
+if (idx != -1) {
+var vBlob = document.URL.substring(idx+1, document.URL.length);
+alert('' + vBlob);
+document.getElementById('video1').src = vBlob;  //  'Vids/Siri.mp4';  // vBlob;
+}
+else document.getElementById('video1').src = 'Vids/Toy Lightsaber.mp4';  // vBlob;
+//window.open(vBlob);
+//        return vBlob;
+}
+
+function initProgram() {
+var vidBlob = document.getElementById('video1');
+
+getParams();
+//resetZoom;
+//resetPan;
+initProgressBar();
+document.getElementById('vol_div').style.display='none';
+isShown=false;
+
+isFull=false;
+}
+
+function makeFile() {
+var input = document.getElementById("fileToUpload");
+
+  var oFilename = input.files[0].name;
+  var samplepos=oFilename.lastIndexOf('.');
+  var ext = oFilename.substr(samplepos);
+  if(ext=='.mp4' || ext=='.webm' || ext=='.ogv') {
+  
+    var oTitle = oFilename.substr(0, samplepos);
+    document.getElementById('vidtitle').innerHTML=oTitle;
+
+    // createObjectURL creates the blob for the file!
+    var oBlob = URL.createObjectURL(event.target.files[0]);
+  }  // End if(ext ...
+video1.src = oBlob;
+document.getElementById('pp').src="https://lh5.googleusercontent.com/-IIiZ8hWrv1k/VQLsZXTdRHI/AAAAAAAAAMc/bvEYTcnk5XA/s73/Play.png";
+
+}    // End makeFileList()
+
+function BigSmall() {
+var docElm = document.documentElement;
+
+  if(!isFull) {
+//  alert('Not full screen!');
+  docElm.webkitRequestFullScreen();
+  
+  var ht = screen.height - 76;
+  document.getElementById('focal').style.height='' + ht + 'px';
+  document.getElementById('full-collapse').src='https://lh6.googleusercontent.com/-HZvwaOnqClA/VPeABlzEwaI/AAAAAAAAADk/qLBCrnaA30A/s18/collapse-screen.png';
+  isFull=true;
+  }
+  else {
+  document.webkitCancelFullScreen();
+  document.getElementById('focal').style.height='400px';
+  document.getElementById('full-collapse').src='https://lh4.googleusercontent.com/-Gcdi9RkNHiU/VPeACHzAMhI/AAAAAAAAAEQ/24r8SDfOltg/s19/full-screen.png';
+  isFull=false;
+  }
+}
+
+</script>
+
+<style type='text/css'>
+#master {border:1px solid black}
+#focal {text-align: center; height:400px}
+#video1 {max-width:1004px}
+.parent {text-align:center}
+/* .panzoom { border:dashed black 1px; height:100% } */
+.panzoom { height:100%}
+
+#bar{
+    background-color:white;
+    border:1px solid black;
+    position:relative;
+    top:5px;
+    margin-left:18px;
+    width:966px; height:11px;
+    border-radius: 13px}
+
+#slider{
+	background-color:lime;
+	position:absolute;
+	top:0px;
+	left:0px;
+	width:0px;
+	height:100%;
+    border-radius: 10px; /* (height of inner div) / 2 + padding */
+}
+
+#disc{
+	position:absolute;
+	width:20px;
+	height:20px;
+	top:-4px;
+	left:-10px;
+    background-image:url('https://lh3.googleusercontent.com/-RGZnjDrICzA/VPeADKsbRjI/AAAAAAAAAEE/jLP6zDCDnFc/s512/smiley_red.png');
+    background-size:20px 20px;
+    background-repeat:no-repeat;
+    background-position:0px 0px;
+}
+
+.tdata {cursor:default; width:150px}
+
+#st {font-size:17pt}
+#pp {position:relative; top:7px}
+#sb {font-size:13pt}
+#sf {font-size:13pt}
+#sp {position:relative; top:7px}
+
+
+#vol_div {
+position:absolute;
+left:-55px;
+top:-85px;
+background-color:lightblue;
+width:0px;
+}
+
+.rotateLeft {
+-ms-transform: rotate(-90deg); /* IE 9 */
+-webkit-transform: rotate(-90deg); /* Chrome, Safari, Opera */
+transform: rotate(-90deg);
+}
+
+.disp {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#rv{height:18px}
+</style>
+</head>
+
+<body onload='initProgram()'>
+
+<div id="master">
+
+  <section id="focal">
+    <div id="parent" class="parent">
+      <div class="panzoom">
+        <div id="video_container">
+          <video id="video1" src="" onended="recallVid()"></video>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ProgBarHolder" style="background-color:blue; border-top: 1px solid black; height:25px">
+    <div id='bar'>
+      <div id='slider'></div>
+      <div id='disc'></div>
+    </div>
+  </div>
+
+  <table cellspacing="0" cellpadding="0" style="background-color:blue; color:white; width:100%">
+    <tr>
+      <td class="tdata" style="color:white">
+        &nbsp; <img id="full-collapse" src="https://lh4.googleusercontent.com/-Gcdi9RkNHiU/VPeACHzAMhI/AAAAAAAAAEQ/24r8SDfOltg/s19/full-screen.png" height="20" onclick="BigSmall()" />&nbsp; 
+        <input type="file" id="fileToUpload" accept="video/*" style="display:none" onChange="makeFile()" />
+        <button style="position:relative;top:-5px" onClick="fileToUpload.click()">Select Video</button>
+      </td>
+      <td style="color:white; text-align:center; width:120px" id="bothTimesWhole">&nbsp;</td>
+      <td id="vidtitle" style="color:white;font-size:20px;text-align:center">Toy Lightsaber</td>
+      <td class="tdata" style="text-align:right; width:240px">
+        <div style="position:relative; top:-10px; height:30px" class="disp">
+          <span id="st" onclick="this.blur();halt()">&#8718;&nbsp;</span>
+          <span onclick="this.blur();play_pause()"><img id="pp" src="https://lh5.googleusercontent.com/-IIiZ8hWrv1k/VQLsZXTdRHI/AAAAAAAAAMc/bvEYTcnk5XA/s73/Play.png" width="24px" /></span>
+          <span id="sf" onclick="this.blur();video1.currentTime -= 0.03;">&#10703;</span>
+          <span id="sb" onclick="this.blur();video1.currentTime += 0.03;">&#10704;&nbsp;</span>
+          <span id="sp" onclick="this.blur(); show_hide_vol()">
+            <div id="vol_div">
+              <input class="rotateLeft" type="range" min="0" max="100" step="1" value="100" onchange="video1.volume = this.value * 0.01" />
+            </div>
+            <img src="https://lh5.googleusercontent.com/-7UAEJHjZktA/VPeADO6pquI/AAAAAAAAAEI/XSYsJKEkL4I/s512/volume-full-icon.png" height="24"/>
+            &nbsp;&nbsp;
+          </span>
+        </div> 
+      </td>
+      <td style="color:white;text-align:center"></td>
+    </tr>
+  </table>
+
+</div>  <!-- End master -->
+
+<script>
+(function() {
+  var $section = $('#focal');
+  var $panzoom = $section.find('.panzoom').panzoom();
+  $panzoom.parent().on('mousewheel.focal', function( e ) {
+    e.preventDefault();
+    var delta = e.delta || e.originalEvent.wheelDelta;
+    var zoomOut = delta ? delta < 0 : e.originalEvent.deltaY > 0;
+    $panzoom.panzoom('zoom', zoomOut, {
+      increment: 0.1,
+      animate: false,
+      focal: e
+    });
+  });
+})();
+</script>
+</body>
+</html>
