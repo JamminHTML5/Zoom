@@ -108,28 +108,11 @@ else { document.getElementById("vol_div").style.display="inherit"; isShown = tru
 var isShown = new Boolean();  // Volume Slider
 var isFull = new Boolean();  // Volume Slider
 
-function getParams() {
-var idx = document.URL.indexOf('?');
-if (idx != -1) {
-var vBlob = document.URL.substring(idx+1, document.URL.length);
-alert('' + vBlob);
-document.getElementById('video1').src = vBlob;  //  'Vids/Siri.mp4';  // vBlob;
-}
-else document.getElementById('video1').src = 'Vids/Toy Lightsaber.mp4';  // vBlob;
-//window.open(vBlob);
-//        return vBlob;
-}
-
 function initProgram() {
-var vidBlob = document.getElementById('video1');
 
-getParams();
-//resetZoom;
-//resetPan;
 initProgressBar();
 document.getElementById('vol_div').style.display='none';
 isShown=false;
-
 isFull=false;
 }
 
@@ -143,22 +126,18 @@ var input = document.getElementById("fileToUpload");
   
     var oTitle = oFilename.substr(0, samplepos);
     document.getElementById('vidtitle').innerHTML=oTitle;
-
-    // createObjectURL creates the blob for the file!
     var oBlob = URL.createObjectURL(event.target.files[0]);
   }  // End if(ext ...
 video1.src = oBlob;
 document.getElementById('pp').src="https://lh5.googleusercontent.com/-IIiZ8hWrv1k/VQLsZXTdRHI/AAAAAAAAAMc/bvEYTcnk5XA/s73/Play.png";
-
+video1.poster='';
 }    // End makeFileList()
 
 function BigSmall() {
 var docElm = document.documentElement;
 
   if(!isFull) {
-//  alert('Not full screen!');
   docElm.webkitRequestFullScreen();
-  
   var ht = screen.height - 76;
   document.getElementById('focal').style.height='' + ht + 'px';
   document.getElementById('full-collapse').src='https://lh6.googleusercontent.com/-HZvwaOnqClA/VPeABlzEwaI/AAAAAAAAADk/qLBCrnaA30A/s18/collapse-screen.png';
@@ -171,7 +150,6 @@ var docElm = document.documentElement;
   isFull=false;
   }
 }
-
 </script>
 
 <style type='text/css'>
@@ -257,7 +235,9 @@ transform: rotate(-90deg);
     <div id="parent" class="parent">
       <div class="panzoom">
         <div id="video_container">
-          <video id="video1" src="" onended="recallVid()"></video>
+          <video id="video1" poster="https://lh6.googleusercontent.com/-O66cCLLzXGI/VRhXE17KqvI/AAAAAAAAAOI/hQVWCMIK2Qg/s644/Geico%2520-%2520Words%2520Can%2520Hurt.png" onended="recallVid()">
+            <source src="http://b1453b95e76d4e3a87dc-6994ecbbd2d8c2e37b1dfdf39ec101fc.r20.cf1.rackcdn.com/34/50/01/34500109/ad_34500109_11eb70120ac9fd95_web.mp4">
+          </video>
         </div>
       </div>
     </div>
@@ -278,7 +258,7 @@ transform: rotate(-90deg);
         <button style="position:relative;top:-5px" onClick="fileToUpload.click()">Select Video</button>
       </td>
       <td style="color:white; text-align:center; width:120px" id="bothTimesWhole">&nbsp;</td>
-      <td id="vidtitle" style="color:white;font-size:20px;text-align:center">Toy Lightsaber</td>
+      <td id="vidtitle" style="color:white;font-size:20px;text-align:center">GEICO - Words Can Hurt</td>
       <td class="tdata" style="text-align:right; width:240px">
         <div style="position:relative; top:-10px; height:30px" class="disp">
           <span id="st" onclick="this.blur();halt()">&#8718;&nbsp;</span>
