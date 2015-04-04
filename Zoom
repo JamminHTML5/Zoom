@@ -109,9 +109,9 @@ var isShown = new Boolean();  // Volume Slider
 var isFull = new Boolean();  // Volume Slider
 
 function initProgram() {
-
 initProgressBar();
 document.getElementById('vol_div').style.display='none';
+document.getElementById('video1').style.height='400px';
 isShown=false;
 isFull=false;
 }
@@ -127,10 +127,11 @@ var input = document.getElementById("fileToUpload");
     var oTitle = oFilename.substr(0, samplepos);
     document.getElementById('vidtitle').innerHTML=oTitle;
     var oBlob = URL.createObjectURL(event.target.files[0]);
+    video1.src = oBlob;
+    document.getElementById('pp').src="https://lh5.googleusercontent.com/-IIiZ8hWrv1k/VQLsZXTdRHI/AAAAAAAAAMc/bvEYTcnk5XA/s73/Play.png";
+    video1.style.height='400px';
+    video1.poster='';
   }  // End if(ext ...
-video1.src = oBlob;
-document.getElementById('pp').src="https://lh5.googleusercontent.com/-IIiZ8hWrv1k/VQLsZXTdRHI/AAAAAAAAAMc/bvEYTcnk5XA/s73/Play.png";
-video1.poster='';
 }    // End makeFileList()
 
 function BigSmall() {
@@ -235,7 +236,7 @@ transform: rotate(-90deg);
     <div id="parent" class="parent">
       <div class="panzoom">
         <div id="video_container">
-          <video id="video1" poster="https://lh6.googleusercontent.com/-O66cCLLzXGI/VRhXE17KqvI/AAAAAAAAAOI/hQVWCMIK2Qg/s644/Geico%2520-%2520Words%2520Can%2520Hurt.png" onended="recallVid()">
+          <video id="video1" poster="https://lh6.googleusercontent.com/-O66cCLLzXGI/VRhXE17KqvI/AAAAAAAAAOI/hQVWCMIK2Qg/s644/Geico%2520-%2520Words%2520Can%2520Hurt.png" onended="document.getElementById('pp').src='../../Buttons/Play.png'">
             <source src="http://b1453b95e76d4e3a87dc-6994ecbbd2d8c2e37b1dfdf39ec101fc.r20.cf1.rackcdn.com/34/50/01/34500109/ad_34500109_11eb70120ac9fd95_web.mp4">
           </video>
         </div>
