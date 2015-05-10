@@ -2,8 +2,9 @@
 <html>
 <head>
 <title>Zoom & Move Video</title>
+<link rel="stylesheet" type="text/css" href="../../css/volume.css">
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<meta name="keywords" content="jamminhtml5,video,zoom,html5,playlist">
+<meta name="keywords" content="jamminhtml5,video,pan,zoom,html5">
 <script src="https://rawgit.com/timmywil/jquery.panzoom/master/test/libs/jquery.js"></script>
 <script src="https://rawgit.com/timmywil/jquery.panzoom/master/dist/jquery.panzoom.js"></script>
 
@@ -79,7 +80,6 @@ disc.style.left = w - 12;
 
 v1 = document.getElementById('video1');
 pp = document.getElementById('pp');
-var isShown = new Boolean();  // Volume Slider
 
 function halt() { 
 v1.currentTime=0;
@@ -98,27 +98,34 @@ function play_pause() {
   } 
 }
 
-function show_hide_vol() {
-if(isShown) { document.getElementById("vol_div").style.display = "none"; isShown = false; }
-else { document.getElementById("vol_div").style.display="inherit"; isShown = true; }
-}
-
 // Zoom Video Program
 
-var isShown = new Boolean();  // Volume Slider
 var isFull = new Boolean();  // Volume Slider
 
 function initProgram() {
+//resetZoom;
+//resetPan;
 initProgressBar();
-document.getElementById('vol_div').style.display='none';
-document.getElementById('video1').style.height='400px';
-isShown=false;
+document.getElementById('vol_holder').style.display='none';
+
+document.getElementById('vol_holder').style.left='978px';
+document.getElementById('vol_holder').style.top='305px';
+
+vol_level = 0.8;  // Set to your own preference (0 to 1.0).
+document.getElementById('video1').volume = vol_level;
+
+initVolume();
+
+video1.height=400;
+video1.poster="https://lh6.googleusercontent.com/-O66cCLLzXGI/VRhXE17KqvI/AAAAAAAAAOI/hQVWCMIK2Qg/s644/Geico%2520-%2520Words%2520Can%2520Hurt.png";
+video1.src="http://b1453b95e76d4e3a87dc-6994ecbbd2d8c2e37b1dfdf39ec101fc.r20.cf1.rackcdn.com/34/50/01/34500109/ad_34500109_11eb70120ac9fd95_web.mp4";
 isFull=false;
 }
 
 function makeFile() {
 var input = document.getElementById("fileToUpload");
 
+  document.getElementById('video1').poster='';
   var oFilename = input.files[0].name;
   var samplepos=oFilename.lastIndexOf('.');
   var ext = oFilename.substr(samplepos);
@@ -126,31 +133,36 @@ var input = document.getElementById("fileToUpload");
   
     var oTitle = oFilename.substr(0, samplepos);
     document.getElementById('vidtitle').innerHTML=oTitle;
+
+    // createObjectURL creates the blob for the file!
     var oBlob = URL.createObjectURL(event.target.files[0]);
-    video1.src = oBlob;
-    document.getElementById('pp').src="https://lh5.googleusercontent.com/-IIiZ8hWrv1k/VQLsZXTdRHI/AAAAAAAAAMc/bvEYTcnk5XA/s73/Play.png";
-    video1.style.height='400px';
-    video1.poster='';
+	video1.src = oBlob;
+    video1.style.height = '400px';
+	document.getElementById('pp').src="https://lh5.googleusercontent.com/-IIiZ8hWrv1k/VQLsZXTdRHI/AAAAAAAAAMc/bvEYTcnk5XA/s73/Play.png";
   }  // End if(ext ...
 }    // End makeFileList()
 
 function BigSmall() {
 var docElm = document.documentElement;
 
-  if(!isFull) {
+if(!isFull) {
   docElm.webkitRequestFullScreen();
   var ht = screen.height - 76;
   document.getElementById('focal').style.height='' + ht + 'px';
   document.getElementById('full-collapse').src='https://lh6.googleusercontent.com/-HZvwaOnqClA/VPeABlzEwaI/AAAAAAAAADk/qLBCrnaA30A/s18/collapse-screen.png';
+  document.getElementById('vol_holder').style.top='430px';
   isFull=true;
-  }
-  else {
+}
+else {
   document.webkitCancelFullScreen();
   document.getElementById('focal').style.height='400px';
   document.getElementById('full-collapse').src='https://lh4.googleusercontent.com/-Gcdi9RkNHiU/VPeACHzAMhI/AAAAAAAAAEQ/24r8SDfOltg/s19/full-screen.png';
+  document.getElementById('vol_holder').style.top='305px';
   isFull=false;
-  }
 }
+}
+
+document.addEventListener('keydown', function (evt) {play_pause()}, false);
 </script>
 
 <style type='text/css'>
@@ -192,28 +204,13 @@ var docElm = document.documentElement;
     background-position:0px 0px;
 }
 
+.ProgBarHolder {cursor:default}
 .tdata {cursor:default; width:150px}
 
-#st {font-size:17pt}
-#pp {position:relative; top:7px}
-#sb {font-size:13pt}
-#sf {font-size:13pt}
-#sp {position:relative; top:7px}
-
-
-#vol_div {
-position:absolute;
-left:-55px;
-top:-85px;
-background-color:lightblue;
-width:0px;
-}
-
-.rotateLeft {
--ms-transform: rotate(-90deg); /* IE 9 */
--webkit-transform: rotate(-90deg); /* Chrome, Safari, Opera */
-transform: rotate(-90deg);
-}
+#st {position:relative; top:6px}
+#pp {position:relative; top:8px}
+#sb {position:relative; top:6px}
+#sp {position:relative; top:8px}
 
 .disp {
     -webkit-touch-callout: none;
@@ -225,6 +222,43 @@ transform: rotate(-90deg);
 }
 
 #rv{height:18px}
+
+#vol_holder {
+position:absolute;             /* left & top to be assigned. */
+border:1px solid black;
+background-color:white;
+padding-bottom:5px;
+text-align:center;
+width:30px
+}
+
+#vol_ro {font-family:sans-serif; cursor:default}
+#volume_trackbar {
+background-color:lime;
+border :1px solid black;
+width:4px;
+height:100px;                  /* Allow for 1px border, bottom only. */
+margin-left:12px
+}
+
+#volume_track_top {
+position:relative;
+background-color:white;
+}
+
+#knob {
+position:relative;
+left:-6px;
+
+background-image:url('https://lh3.googleusercontent.com/-hULC3LXxRBo/VU-MdVMXvbI/AAAAAAAAAPs/oFuL9WCdRG0/s233/Bar%2520-%2520Red.png'); /* Unknown PicasaWeb URL */
+
+background-size:16px 8px;
+background-repeat:no-repeat;
+background-position:0px 0px;
+cursor:default;                /* Prevent paragraph symbol when dragging. */
+width:16px;
+height:8px
+}
 </style>
 </head>
 
@@ -236,9 +270,7 @@ transform: rotate(-90deg);
     <div id="parent" class="parent">
       <div class="panzoom">
         <div id="video_container">
-          <video id="video1" poster="https://lh6.googleusercontent.com/-O66cCLLzXGI/VRhXE17KqvI/AAAAAAAAAOI/hQVWCMIK2Qg/s644/Geico%2520-%2520Words%2520Can%2520Hurt.png" onended="document.getElementById('pp').src='../../Buttons/Play.png'">
-            <source src="http://b1453b95e76d4e3a87dc-6994ecbbd2d8c2e37b1dfdf39ec101fc.r20.cf1.rackcdn.com/34/50/01/34500109/ad_34500109_11eb70120ac9fd95_web.mp4">
-          </video>
+          <video id="video1" onended="document.getElementById('pp').src='https://lh5.googleusercontent.com/-IIiZ8hWrv1k/VQLsZXTdRHI/AAAAAAAAAMc/bvEYTcnk5XA/s73/Play.png'"></video>
         </div>
       </div>
     </div>
@@ -262,17 +294,11 @@ transform: rotate(-90deg);
       <td id="vidtitle" style="color:white;font-size:20px;text-align:center">GEICO - Words Can Hurt</td>
       <td class="tdata" style="text-align:right; width:240px">
         <div style="position:relative; top:-10px; height:30px" class="disp">
-          <span id="st" onclick="this.blur();halt()">&#8718;&nbsp;</span>
+          <span onclick="this.blur();halt()"><img id="st" src="https://lh3.googleusercontent.com/-I-bdEaVKj44/VUKUU7MfnlI/AAAAAAAAAO4/Pg4_smw16oM/s73/Stop.png" width="19px" />&nbsp;</span>
           <span onclick="this.blur();play_pause()"><img id="pp" src="https://lh5.googleusercontent.com/-IIiZ8hWrv1k/VQLsZXTdRHI/AAAAAAAAAMc/bvEYTcnk5XA/s73/Play.png" width="24px" /></span>
-          <span id="sf" onclick="this.blur();video1.currentTime -= 0.03;">&#10703;</span>
-          <span id="sb" onclick="this.blur();video1.currentTime += 0.03;">&#10704;&nbsp;</span>
-          <span id="sp" onclick="this.blur(); show_hide_vol()">
-            <div id="vol_div">
-              <input class="rotateLeft" type="range" min="0" max="100" step="1" value="100" onchange="video1.volume = this.value * 0.01" />
-            </div>
-            <img src="https://lh5.googleusercontent.com/-7UAEJHjZktA/VPeADO6pquI/AAAAAAAAAEI/XSYsJKEkL4I/s512/volume-full-icon.png" height="24"/>
-            &nbsp;&nbsp;
-          </span>
+          <span onclick="this.blur();video1.currentTime -= 0.03;"><img id="sb" src="https://lh3.googleusercontent.com/-O4cmh0riSUU/VUKBpTzjFWI/AAAAAAAAAOk/1qRkuxzjPb8/s73/step-backward.png" width="19px" /></span>
+          <span onclick="this.blur();video1.currentTime += 0.03;"><img id="sb" src="https://lh3.googleusercontent.com/-FdK9FSPqgyo/VUKBoYwwj_I/AAAAAAAAAOc/_D6qv4cEs-g/s73/step-forward.png" width="19px" />&nbsp;</span>
+          <span id="sp" onclick="this.blur(); show_hide_zoom_vol()"><img src="https://lh5.googleusercontent.com/-7UAEJHjZktA/VPeADO6pquI/AAAAAAAAAEI/XSYsJKEkL4I/s512/volume-full-icon.pngvolume-full-icon.png" height="24"/>&nbsp;&nbsp;</span>
         </div> 
       </td>
       <td style="color:white;text-align:center"></td>
@@ -280,6 +306,15 @@ transform: rotate(-90deg);
   </table>
 
 </div>  <!-- End master -->
+
+<div id='vol_holder'>
+  <div id='vol_ro' class='disp'>99</div>
+  <div id='volume_trackbar'>
+    <div id='volume_track_top'>
+      <div id='knob'></div>
+    </div>
+  </div>
+</div>
 
 <script>
 (function() {
@@ -296,6 +331,110 @@ transform: rotate(-90deg);
     });
   });
 })();
+</script>
+
+<script>
+var vol_level = 0.9;
+var isShown = new Boolean();  // Volume Slider
+
+var IE = document.all?true:false;
+
+if (!IE) document.captureEvents(Event.MOUSEMOVE);
+
+var container = document.getElementById("vol_holder");
+container.onmousemove = getMouseXY;  // Displays only when cursor is inside container!
+document.onmousemove = getMouseXY;   // Displays when cursor is anywhere on the screen!
+
+var tempX = 0, tempY = 0, tempL = 0, tempT = 0, tempV = vol_level * 100;
+
+function getMouseXY(e)
+{
+  if (IE)
+  { 
+    tempX = event.clientX + document.body.scrollLeft;
+    tempY = event.clientY + document.body.scrollTop;
+    tempL = tempX - container.offsetLeft;
+    tempT = tempY - container.offsetTop;
+  } 
+  else 
+  {  
+    tempX = e.pageX;
+    tempY = e.pageY;
+    tempL = tempX - container.offsetLeft;
+    tempT = tempY - container.offsetTop;
+  }  
+      return true;
+}
+
+// Start, Move, Stop Dragging.
+
+function initVolumeBar() {
+volume_bar = document.getElementById('volume_trackbar');
+volume_bar.addEventListener('mousedown', startVolumeSlide, false);	
+volume_bar.addEventListener('mouseup', stopVolumeSlide, false);
+
+volume_knob = document.getElementById('knob');
+volume_knob.addEventListener('mousedown', startVolumeSlide, false);	
+volume_knob.addEventListener('mouseup', stopVolumeSlide, false);
+}
+ 
+function startVolumeSlide(e) {
+if(tempT > 19 && tempT < 121) tempV = 120 - tempT;
+
+volume_bar.addEventListener('mousemove', moveVolumeSlide, false);	
+volume_knob.addEventListener('mousemove', moveVolumeSlide, false);
+
+document.getElementById('volume_track_top').style.height = 100 - tempV;
+document.getElementById('knob').style.top = 100 - tempV - 4;
+document.getElementById('vol_ro').innerHTML='' + tempV;
+
+vol_level = tempV * 0.01;
+document.getElementById('video1').volume=vol_level;
+}
+ 
+function moveVolumeSlide(e) {
+if(tempT > 19 && tempT < 121 && tempL > 7 && tempL <17) tempV = 120 - tempT
+else {
+volume_bar.removeEventListener('mousemove', moveVolumeSlide, false);
+volume_knob.removeEventListener('mousemove', moveVolumeSlide, false);
+}
+
+document.getElementById('volume_track_top').style.height = 100 - tempV;
+document.getElementById('knob').style.top = 100 - tempV - 4;
+document.getElementById('vol_ro').innerHTML='' + tempV;
+
+vol_level = tempV * 0.01;
+document.getElementById('video1').volume=vol_level;
+}
+
+function stopVolumeSlide(e) {
+volume_bar.removeEventListener('mousemove', moveVolumeSlide, false);
+volume_knob.removeEventListener('mousemove', moveVolumeSlide, false);
+
+document.getElementById('volume_track_top').style.height = 100 - tempV;
+document.getElementById('knob').style.top = 100 - tempV - 4;
+document.getElementById('vol_ro').innerHTML='' + tempV;
+
+vol_level = tempV * 0.01;
+document.getElementById('video1').volume=vol_level;
+}
+
+function show_hide_zoom_vol() {
+if(isShown) {document.getElementById("vol_holder").style.display = "none"; isShown = false;}
+else {document.getElementById("vol_holder").style.display="inherit"; isShown = true;}
+}
+
+function initVolume() {
+document.getElementById("vol_holder").style.display = "none";
+isShown=false;
+
+initVolumeBar();
+document.getElementById('volume_track_top').style.height = 100 - (vol_level * 100);
+document.getElementById('knob').style.top = 100 - (vol_level * 100) - 2;
+
+ro = vol_level * 100;
+document.getElementById('vol_ro').innerHTML = '' + ro;
+}
 </script>
 </body>
 </html>
