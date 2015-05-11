@@ -376,6 +376,7 @@ volume_bar.addEventListener('mouseup', stopVolumeSlide, false);
 volume_knob = document.getElementById('knob');
 volume_knob.addEventListener('mousedown', startVolumeSlide, false);	
 volume_knob.addEventListener('mouseup', stopVolumeSlide, false);
+volume_knob.addEventListener('mouseout', stopVolumeSlide, false);
 }
  
 function startVolumeSlide(e) {
@@ -393,7 +394,7 @@ document.getElementById('video1').volume=vol_level;
 }
  
 function moveVolumeSlide(e) {
-if(tempT > 19 && tempT < 121 && tempL > 7 && tempL <17) tempV = 120 - tempT
+if(tempT > 19 && tempT < 121 && tempL > 7 && tempL < 25) tempV = 120 - tempT
 else {
 volume_bar.removeEventListener('mousemove', moveVolumeSlide, false);
 volume_knob.removeEventListener('mousemove', moveVolumeSlide, false);
