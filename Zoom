@@ -108,7 +108,8 @@ function initProgram() {
 initProgressBar();
 document.getElementById('vol_holder').style.display='none';
 
-document.getElementById('vol_holder').style.left='978px';
+vol_lft = screen.width - 46;
+document.getElementById('vol_holder').style.left='' + vol_lft + 'px';  // '978px';
 document.getElementById('vol_holder').style.top='305px';
 
 document.getElementById('video1').volume = vol_level;
