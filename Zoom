@@ -111,7 +111,6 @@ document.getElementById('vol_holder').style.display='none';
 document.getElementById('vol_holder').style.left='978px';
 document.getElementById('vol_holder').style.top='305px';
 
-vol_level = 0.8;  // Set to your own preference (0 to 1.0).
 document.getElementById('video1').volume = vol_level;
 
 initVolume();
@@ -334,7 +333,7 @@ height:8px
 </script>
 
 <script>
-var vol_level = 0.9;
+var vol_level = 0.8;
 var isShown = new Boolean();  // Volume Slider
 
 var IE = document.all?true:false;
